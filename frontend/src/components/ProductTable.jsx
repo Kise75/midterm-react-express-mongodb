@@ -15,9 +15,7 @@ function ProductTable({ products, deletingId, onDelete }) {
       <table className="product-table">
         <thead>
           <tr>
-            <th>Ảnh</th>
-            <th>Mã</th>
-            <th>Tên sản phẩm</th>
+            <th>Sản phẩm</th>
             <th>Danh mục</th>
             <th>Giá</th>
             <th>Tồn kho</th>
@@ -28,14 +26,19 @@ function ProductTable({ products, deletingId, onDelete }) {
           {products.map((product) => (
             <tr key={product.id}>
               <td>
-                <img
-                  className="product-thumbnail"
-                  src={getProductImage(product)}
-                  alt={product.name}
-                />
+                <Link className="product-link" to={`/products/${product.id}`}>
+                  <img
+                    className="product-thumbnail"
+                    src={getProductImage(product)}
+                    alt={product.name}
+                  />
+                  <div className="product-link__content">
+                    <strong>{product.name}</strong>
+                    <span>Mã sản phẩm: {product.id}</span>
+                    <span className="product-link__hint">Bấm để xem chi tiết</span>
+                  </div>
+                </Link>
               </td>
-              <td>{product.id}</td>
-              <td>{product.name}</td>
               <td>{product.category}</td>
               <td>{formatCurrency(product.price)}</td>
               <td>{product.stock}</td>
