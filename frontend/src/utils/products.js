@@ -59,9 +59,9 @@ export function getProductImage(product = {}) {
 }
 
 export function formatCurrency(value) {
-  return new Intl.NumberFormat('vi-VN', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'VND',
+    currency: 'USD',
     maximumFractionDigits: 0,
   }).format(Number(value) || 0)
 }
