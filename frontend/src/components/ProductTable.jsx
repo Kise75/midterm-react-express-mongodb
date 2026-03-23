@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { formatCurrency } from '../utils/products'
+import { formatCurrency, getProductImage } from '../utils/products'
 
 function ProductTable({ products, deletingId, onDelete }) {
   if (products.length === 0) {
@@ -15,6 +15,7 @@ function ProductTable({ products, deletingId, onDelete }) {
       <table className="product-table">
         <thead>
           <tr>
+            <th>Ảnh</th>
             <th>Mã</th>
             <th>Tên sản phẩm</th>
             <th>Danh mục</th>
@@ -26,6 +27,13 @@ function ProductTable({ products, deletingId, onDelete }) {
         <tbody>
           {products.map((product) => (
             <tr key={product.id}>
+              <td>
+                <img
+                  className="product-thumbnail"
+                  src={getProductImage(product)}
+                  alt={product.name}
+                />
+              </td>
               <td>{product.id}</td>
               <td>{product.name}</td>
               <td>{product.category}</td>

@@ -110,7 +110,6 @@ function App() {
         <div className="container site-header__inner">
           <div>
             <h1 className="site-title">Quản lý sản phẩm</h1>
-            <p className="site-subtitle">Bài giữa kỳ React, Express và MongoDB</p>
           </div>
 
           <nav className="site-nav">
