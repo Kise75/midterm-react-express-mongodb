@@ -1,64 +1,65 @@
+import { Link } from 'react-router-dom'
 import { formatCurrency, getProductImage } from '../utils/products'
 
-function ProductDetail({ product, onEdit, onDelete, onCreateNew, onClose }) {
+function ProductDetail({ product, isDeleting, onDelete }) {
   if (!product) {
     return (
-      <section className="panel panel--detail">
-        <div className="empty-state empty-state--detail">
-          <h3>Chua co san pham nao duoc chon</h3>
-          <p>
-            Bam vao mot san pham trong danh sach de mo man hinh chi tiet ro rang hon.
-          </p>
-          <button type="button" className="button button--primary" onClick={onCreateNew}>
-            Tao san pham moi
-          </button>
-        </div>
-      </section>
+      <div className="content-card">
+        <p>Không tìm thấy sản phẩm.</p>
+      </div>
     )
   }
 
   return (
-    <section className="panel panel--detail">
-      <div className="panel__header">
+    <div className="content-card detail-card">
+      <div className="detail-card__top">
         <div>
-          <h3>{product.name}</h3>
-          <p className="detail-subtitle">Chi tiet san pham #{product.id}</p>
+          <h2>{product.name}</h2>
+          <p className="muted-text">Mã sản phẩm: {product.id}</p>
         </div>
-        <button type="button" className="button button--ghost" onClick={onClose}>
-          Dong
-        </button>
-      </div>
-
-      <img className="detail-hero" src={getProductImage(product)} alt={product.name} />
-
-      <div className="detail-grid">
-        <div className="detail-item">
-          <span>Danh muc</span>
-          <strong>{product.category}</strong>
-        </div>
-        <div className="detail-item">
-          <span>Gia</span>
-          <strong>{formatCurrency(product.price)}</strong>
-        </div>
-        <div className="detail-item">
-          <span>Ton kho</span>
-          <strong>{product.stock}</strong>
-        </div>
-        <div className="detail-item">
-          <span>Gia tri kho</span>
-          <strong>{formatCurrency(product.price * product.stock)}</strong>
+        <div className="action-group">
+          <Link className="button button--secondary" to="/">
+            Quay lại
+          </Link>
+          <Link className="button" to={`/products/${product.id}/edit`}>
+            Sửa sản phẩm
+          </Link>
+          <button
+            type="button"
+            className="button button--danger"
+            onClick={() => onDelete(product)}
+            disabled={isDeleting}
+          >
+            {isDeleting ? 'Đang xóa...' : 'Xóa sản phẩm'}
+          </button>
         </div>
       </div>
 
-      <div className="panel__actions">
-        <button type="button" className="button button--primary" onClick={() => onEdit(product)}>
-          Chinh sua
-        </button>
-        <button type="button" className="button button--danger" onClick={() => onDelete(product)}>
-          Xoa san pham
-        </button>
+      <div className="detail-card__body">
+        <div className="detail-card__image">
+          <img src={getProductImage(product)} alt={product.name} />
+        </div>
+
+        <div className="detail-card__info">
+          <div className="info-item">
+            <span>Danh mục</span>
+            <strong>{product.category}</strong>
+          </div>
+          <div className="info-item">
+            <span>Giá</span>
+            <strong>{formatCurrency(product.price)}</strong>
+          </div>
+          <div className="info-item">
+            <span>Tồn kho</span>
+            <strong>{product.stock}</strong>
+          </div>
+          <div className="info-item">
+            <span>Giá trị tồn kho</span>
+            <strong>{formatCurrency(product.price * product.stock)}</strong>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   )
 }
 

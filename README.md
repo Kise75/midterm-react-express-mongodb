@@ -1,25 +1,26 @@
-# Midterm React + Express + MongoDB
+# Bài Giữa Kỳ React + Express + MongoDB
 
-Web app full-stack cho bai giua ki voi:
+Ứng dụng full-stack quản lý sản phẩm với:
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
-- Database: MongoDB local, xem du lieu bang MongoDB Compass
-- API: REST CRUD cho `products`
+- Database: MongoDB local, xem dữ liệu bằng MongoDB Compass
+- Giao tiếp: REST API
 
-## Tinh nang chinh
+## Tính năng chính
 
-- Hien thi danh sach san pham
-- Xem chi tiet san pham
-- Them san pham moi
-- Cap nhat san pham
-- Xoa san pham
-- Tim kiem theo ten
-- Loc theo danh muc
-- Loading state, error handling, feedback khi thao tac
-- Seed san dung 4 san pham mau tu de
+- Hiển thị danh sách sản phẩm
+- Xem chi tiết sản phẩm ở trang riêng
+- Thêm sản phẩm mới
+- Cập nhật sản phẩm
+- Xóa sản phẩm
+- Tìm kiếm theo tên
+- Lọc theo danh mục
+- Ảnh sản phẩm không bắt buộc
+- Có thể dán URL ảnh hoặc chọn ảnh từ máy
+- Dữ liệu mẫu được seed tự động vào MongoDB
 
-## Cau truc thu muc
+## Cấu trúc thư mục
 
 ```text
 Midterm/
@@ -38,55 +39,55 @@ Midterm/
 `-- README.md
 ```
 
-## Yeu cau moi truong
+## Yêu cầu môi trường
 
 - Node.js 24+
-- MongoDB Server dang chay o `localhost:27017`
-- MongoDB Compass de xem du lieu
+- MongoDB Server đang chạy ở `localhost:27017`
+- MongoDB Compass để xem dữ liệu
 
-## Cach chay bai
+## Cách chạy bài
 
-1. Cai package o thu muc goc:
+1. Cài package ở thư mục gốc:
 
 ```bash
 npm install
 ```
 
-2. Cai package cho backend:
+2. Cài package cho backend:
 
 ```bash
 cd backend
 npm install
 ```
 
-3. Tao file moi truong cho backend:
+3. Tạo file môi trường cho backend:
 
 ```bash
 copy .env.example .env
 ```
 
-Noi dung mac dinh:
+Nội dung mặc định:
 
 ```env
 PORT=5000
 MONGODB_URI=mongodb://127.0.0.1:27017/midterm_products
 ```
 
-4. Cai package cho frontend:
+4. Cài package cho frontend:
 
 ```bash
 cd ..\\frontend
 npm install
 ```
 
-5. Quay lai thu muc goc va chay ca app:
+5. Quay lại thư mục gốc và chạy cả ứng dụng:
 
 ```bash
 cd ..
 npm run dev
 ```
 
-## Port su dung
+## Cổng sử dụng
 
 - Backend: `http://localhost:5000`
 - Frontend: `http://localhost:5173`
@@ -99,13 +100,14 @@ npm run dev
 mongodb://127.0.0.1:27017
 ```
 
-- Database sau khi chay backend: `midterm_products`
-- Collection chinh: `products`
+- Database sau khi chạy backend: `midterm_products`
+- Collection chính: `products`
 
-Khi backend chay lan dau, he thong se tu seed 4 san pham mau neu collection dang trong.
+Khi backend chạy lần đầu, hệ thống sẽ tự seed 4 sản phẩm mẫu nếu collection đang trống.
 
-## API chinh
+## API chính
 
+- `GET /`
 - `GET /health`
 - `GET /products`
 - `GET /products/:id`
@@ -117,15 +119,15 @@ Bonus:
 
 - `GET /products?category=Phone`
 - `GET /products?search=iphone`
-- Co the ket hop ca `category` va `search`
+- Có thể kết hợp cả `category` và `search`
 
 ## Demo nhanh
 
-- Mo MongoDB Compass va connect toi `localhost:27017`
-- Chay `npm run dev`
-- Vao `http://localhost:5173`
-- Thu them, sua, xoa san pham
-- Mo Compass de xem du lieu thay doi truc tiep trong collection `products`
+- Mở MongoDB Compass và connect tới `localhost:27017`
+- Chạy `npm run dev`
+- Vào `http://localhost:5173`
+- Thử thêm, sửa, xóa sản phẩm
+- Mở Compass để xem dữ liệu thay đổi trực tiếp trong collection `products`
 
 ## GitHub
 

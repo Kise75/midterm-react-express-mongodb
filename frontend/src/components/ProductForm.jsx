@@ -1,143 +1,138 @@
 import { getProductImage } from '../utils/products'
 
 function ProductForm({
-  mode,
+  title,
   values,
+  error,
+  isSaving,
+  categoryOptions,
   onChange,
   onFileSelect,
   onClearImage,
   onSubmit,
   onReset,
-  isSaving,
-  error,
-  categoryOptions,
+  onCancel,
 }) {
-  const isEditMode = mode === 'edit'
   const usingLocalImage = String(values.image ?? '').startsWith('data:image/')
 
   return (
-    <section className="panel panel--form">
-      <div className="panel__header">
+    <form className="content-card form-card" onSubmit={onSubmit}>
+      <div className="page-head">
         <div>
-          <h3>{isEditMode ? 'Cap nhat san pham' : 'Tao san pham moi'}</h3>
-          <p className="detail-subtitle">
-            Anh la tuy chon. Ban co the nhap URL, chon file tu may, hoac de trong.
+          <h2>{title}</h2>
+          <p className="muted-text">
+            Ảnh sản phẩm là tùy chọn. Có thể dán URL, chọn file từ máy, hoặc để trống.
           </p>
         </div>
-        {isEditMode ? <span className="badge badge--accent">Edit</span> : null}
+        {onCancel ? (
+          <button type="button" className="button button--secondary" onClick={onCancel}>
+            Quay lại
+          </button>
+        ) : null}
       </div>
 
-      <form className="product-form" onSubmit={onSubmit}>
+      <div className="form-grid">
         <label className="field">
-          <span>Ten san pham</span>
+          <span>Tên sản phẩm</span>
           <input
             type="text"
             name="name"
             value={values.name}
             onChange={onChange}
-            placeholder="Vi du: iPhone 14"
+            placeholder="Ví dụ: iPhone 14"
           />
         </label>
 
         <label className="field">
-          <span>Danh muc</span>
+          <span>Danh mục</span>
           <input
             type="text"
             name="category"
             value={values.category}
             onChange={onChange}
-            list="category-suggestions"
-            placeholder="Vi du: Phone"
+            list="category-options"
+            placeholder="Ví dụ: Phone"
           />
-          <datalist id="category-suggestions">
+          <datalist id="category-options">
             {categoryOptions.map((option) => (
               <option key={option} value={option} />
             ))}
           </datalist>
         </label>
 
-        <div className="field-row">
-          <label className="field">
-            <span>Gia</span>
-            <input
-              type="number"
-              name="price"
-              min="1"
-              step="1"
-              value={values.price}
-              onChange={onChange}
-              placeholder="1200"
-            />
-          </label>
-
-          <label className="field">
-            <span>Ton kho</span>
-            <input
-              type="number"
-              name="stock"
-              min="0"
-              step="1"
-              value={values.stock}
-              onChange={onChange}
-              placeholder="10"
-            />
-          </label>
-        </div>
+        <label className="field">
+          <span>Giá</span>
+          <input
+            type="number"
+            name="price"
+            min="1"
+            step="1"
+            value={values.price}
+            onChange={onChange}
+            placeholder="1200"
+          />
+        </label>
 
         <label className="field">
-          <span>Image URL (tuy chon)</span>
+          <span>Tồn kho</span>
+          <input
+            type="number"
+            name="stock"
+            min="0"
+            step="1"
+            value={values.stock}
+            onChange={onChange}
+            placeholder="10"
+          />
+        </label>
+
+        <label className="field form-grid__full">
+          <span>URL ảnh (không bắt buộc)</span>
           <input
             type="text"
             name="image"
             value={usingLocalImage ? '' : values.image}
             onChange={onChange}
-            placeholder="Dan URL vao day neu co"
+            placeholder="Dán URL ảnh nếu có"
           />
         </label>
 
-        {usingLocalImage ? (
-          <p className="detail-subtitle">Dang su dung anh duoc chon tu may tinh.</p>
-        ) : null}
-
-        <label className="field">
-          <span>Hoac chon anh tu may</span>
+        <label className="field form-grid__full">
+          <span>Hoặc chọn ảnh từ máy</span>
           <input type="file" accept="image/*" onChange={onFileSelect} />
         </label>
 
-        {(values.image || isEditMode) ? (
-          <div className="field field--preview">
-            <span>Xem truoc anh</span>
-            <img
-              className="form-preview"
-              src={getProductImage(values)}
-              alt={values.name || 'Preview'}
-            />
-            {values.image ? (
-              <div className="panel__actions">
-                <button
-                  type="button"
-                  className="button button--ghost"
-                  onClick={onClearImage}
-                >
-                  Xoa anh dang chon
-                </button>
-              </div>
-            ) : null}
-          </div>
+        {usingLocalImage ? (
+          <p className="muted-text form-grid__full">
+            Đang dùng ảnh được chọn từ máy tính.
+          </p>
         ) : null}
+      </div>
 
-        {error ? <p className="form-error">{error}</p> : null}
-
-        <div className="panel__actions">
-          <button type="submit" className="button button--primary" disabled={isSaving}>
-            {isSaving ? 'Dang luu...' : isEditMode ? 'Luu thay doi' : 'Them san pham'}
-          </button>
-          <button type="button" className="button button--ghost" onClick={onReset}>
-            {isEditMode ? 'Huy chinh sua' : 'Xoa form'}
-          </button>
+      <div className="preview-box">
+        <div>
+          <h3>Xem trước ảnh</h3>
+          <p className="muted-text">Nếu không có ảnh, hệ thống sẽ dùng ảnh mặc định.</p>
         </div>
-      </form>
-    </section>
+        <img className="preview-box__image" src={getProductImage(values)} alt="Xem trước" />
+        {values.image ? (
+          <button type="button" className="button button--secondary" onClick={onClearImage}>
+            Xóa ảnh hiện tại
+          </button>
+        ) : null}
+      </div>
+
+      {error ? <p className="form-error">{error}</p> : null}
+
+      <div className="action-group">
+        <button type="submit" className="button" disabled={isSaving}>
+          {isSaving ? 'Đang lưu...' : 'Lưu sản phẩm'}
+        </button>
+        <button type="button" className="button button--secondary" onClick={onReset}>
+          Làm trống form
+        </button>
+      </div>
+    </form>
   )
 }
 
