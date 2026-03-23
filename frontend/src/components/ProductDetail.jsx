@@ -37,7 +37,9 @@ function ProductDetail({ product, isDeleting, onDelete }) {
 
       <div className="detail-card__body">
         <div className="detail-card__image">
-          <img src={getProductImage(product)} alt={product.name} />
+          <div className="detail-card__image-frame">
+            <img src={getProductImage(product)} alt={product.name} />
+          </div>
         </div>
 
         <div className="detail-card__info">

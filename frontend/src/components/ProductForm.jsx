@@ -114,9 +114,15 @@ function ProductForm({
           <h3>Xem trước ảnh</h3>
           <p className="muted-text">Nếu không có ảnh, hệ thống sẽ dùng ảnh mặc định.</p>
         </div>
-        <img className="preview-box__image" src={getProductImage(values)} alt="Xem trước" />
+        <div className="preview-box__media">
+          <img className="preview-box__image" src={getProductImage(values)} alt="Xem trước" />
+        </div>
         {values.image ? (
-          <button type="button" className="button button--secondary" onClick={onClearImage}>
+          <button
+            type="button"
+            className="button button--secondary preview-box__clear"
+            onClick={onClearImage}
+          >
             Xóa ảnh hiện tại
           </button>
         ) : null}

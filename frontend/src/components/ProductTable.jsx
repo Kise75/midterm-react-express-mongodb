@@ -15,17 +15,17 @@ function ProductTable({ products, deletingId, onDelete }) {
       <table className="product-table">
         <thead>
           <tr>
-            <th>Sản phẩm</th>
+            <th className="product-table__head product-table__head--product">Sản phẩm</th>
             <th>Danh mục</th>
             <th>Giá</th>
             <th>Tồn kho</th>
-            <th>Thao tác</th>
+            <th className="product-table__head product-table__head--actions">Thao tác</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
             <tr key={product.id}>
-              <td>
+              <td className="product-table__product">
                 <Link className="product-link" to={`/products/${product.id}`}>
                   <img
                     className="product-thumbnail"
@@ -39,11 +39,11 @@ function ProductTable({ products, deletingId, onDelete }) {
                   </div>
                 </Link>
               </td>
-              <td>{product.category}</td>
-              <td>{formatCurrency(product.price)}</td>
-              <td>{product.stock}</td>
-              <td>
-                <div className="action-group">
+              <td className="product-table__meta">{product.category}</td>
+              <td className="product-table__meta">{formatCurrency(product.price)}</td>
+              <td className="product-table__meta">{product.stock}</td>
+              <td className="product-table__actions">
+                <div className="action-group action-group--table">
                   <Link className="button button--small" to={`/products/${product.id}/edit`}>
                     Sửa
                   </Link>
