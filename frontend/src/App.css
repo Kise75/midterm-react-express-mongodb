@@ -12,14 +12,22 @@
 .site-header {
   background: #ffffff;
   border-bottom: 1px solid #d1d5db;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
 }
 
 .site-header__inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(240px, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 18px;
   padding: 18px 0;
+}
+
+.site-header__brand {
+  min-width: max-content;
 }
 
 .site-title {
@@ -27,15 +35,36 @@
   font-size: 1.8rem;
 }
 
-.site-subtitle {
-  margin: 4px 0 0;
-  color: #6b7280;
+.site-search {
+  display: grid;
+  gap: 6px;
+}
+
+.site-search__label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.site-search input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.site-search input:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: #2563eb;
+  background: #ffffff;
 }
 
 .site-nav {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .site-nav__link {
@@ -75,6 +104,10 @@
   margin-bottom: 18px;
 }
 
+.page-head--compact {
+  margin-bottom: 12px;
+}
+
 .page-head h2,
 .preview-box h3 {
   margin: 0;
@@ -108,7 +141,8 @@
 
 .summary-item,
 .info-item,
-.preview-box {
+.preview-box,
+.active-search-box {
   border: 1px solid #dbe2ea;
   border-radius: 12px;
   background: #f9fafb;
@@ -126,6 +160,23 @@
 .summary-item strong,
 .info-item strong {
   font-size: 1.1rem;
+}
+
+.active-search-box {
+  display: grid;
+  gap: 8px;
+  align-content: end;
+}
+
+.active-search-box span {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.active-search-box strong {
+  font-size: 1rem;
+  color: #111827;
+  word-break: break-word;
 }
 
 .filter-grid {
@@ -328,7 +379,6 @@
 }
 
 @media (max-width: 900px) {
-  .site-header__inner,
   .page-head,
   .detail-card__top,
   .detail-card__body,
@@ -340,10 +390,42 @@
   }
 
   .site-header__inner {
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+
+  .site-nav__link {
+    text-align: center;
+  }
+
+  .site-search {
+    order: 3;
+  }
+
+  .site-header__brand {
+    min-width: 0;
   }
 
   .product-link {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-nav {
+    width: 100%;
+  }
+
+  .site-nav__link {
+    flex: 1 1 calc(50% - 10px);
+  }
+
+  .product-table th,
+  .product-table td {
+    padding: 12px 10px;
   }
 }

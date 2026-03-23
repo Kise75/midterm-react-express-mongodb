@@ -2,7 +2,16 @@ import { Link } from 'react-router-dom'
 import ProductTable from '../components/ProductTable'
 import { formatCompactNumber, formatCurrency } from '../utils/products'
 
-function ProductListPage({ products, loading, error, deletingId, onReload, onDelete }) {
+function ProductListPage({
+  products,
+  visibleProducts,
+  searchTerm,
+  loading,
+  error,
+  deletingId,
+  onReload,
+  onDelete,
+}) {
   const totalStock = products.reduce((sum, product) => sum + product.stock, 0)
   const totalValue = products.reduce((sum, product) => sum + product.price * product.stock, 0)
 
@@ -38,6 +47,17 @@ function ProductListPage({ products, loading, error, deletingId, onReload, onDel
       </section>
 
       <section className="content-card">
+        <div className="page-head page-head--compact">
+          <div>
+            <h2>Kết quả hiển thị</h2>
+            <p className="muted-text">
+              {searchTerm.trim()
+                ? `Đang lọc theo từ khóa: "${searchTerm.trim()}".`
+                : 'Bạn có thể tìm kiếm nhanh ngay trên thanh menu.'}
+            </p>
+          </div>
+        </div>
+
         {error ? (
           <div className="empty-box">
             <p>{error}</p>
@@ -49,9 +69,13 @@ function ProductListPage({ products, loading, error, deletingId, onReload, onDel
           <div className="empty-box">
             <p>Đang tải dữ liệu sản phẩm...</p>
           </div>
+        ) : visibleProducts.length === 0 ? (
+          <div className="empty-box">
+            <p>Không có sản phẩm nào khớp với từ khóa đang tìm.</p>
+          </div>
         ) : (
           <ProductTable
-            products={products}
+            products={visibleProducts}
             deletingId={deletingId}
             onDelete={onDelete}
           />

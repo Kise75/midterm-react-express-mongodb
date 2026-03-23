@@ -1,28 +1,28 @@
 import { Link } from 'react-router-dom'
-import { useDeferredValue, useState } from 'react'
+import { useState } from 'react'
 import ProductTable from '../components/ProductTable'
 import { formatCompactNumber, formatCurrency } from '../utils/products'
 
-function DashboardPage({ products, loading, error, deletingId, onReload, onDelete }) {
-  const [search, setSearch] = useState('')
+function DashboardPage({
+  products,
+  visibleProducts,
+  searchTerm,
+  loading,
+  error,
+  deletingId,
+  onReload,
+  onDelete,
+}) {
   const [category, setCategory] = useState('all')
-  const deferredSearch = useDeferredValue(search)
 
   const categoryOptions = [
     'all',
     ...new Set(products.map((product) => product.category).filter(Boolean)),
   ]
 
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory = category === 'all' || product.category === category
-    const matchesSearch =
-      !deferredSearch.trim() ||
-      `${product.name} ${product.category}`
-        .toLowerCase()
-        .includes(deferredSearch.trim().toLowerCase())
-
-    return matchesCategory && matchesSearch
-  })
+  const filteredProducts = visibleProducts.filter(
+    (product) => category === 'all' || product.category === category,
+  )
 
   const totalStock = products.reduce((sum, product) => sum + product.stock, 0)
   const totalValue = products.reduce((sum, product) => sum + product.price * product.stock, 0)
@@ -34,7 +34,7 @@ function DashboardPage({ products, loading, error, deletingId, onReload, onDelet
           <div>
             <h2>Dashboard</h2>
             <p className="muted-text">
-              Tổng quan nhanh về dữ liệu sản phẩm và khu vực tìm kiếm trực tiếp.
+              Tổng quan nhanh về dữ liệu sản phẩm và khu vực quản lý chính.
             </p>
           </div>
           <div className="action-group">
@@ -66,24 +66,14 @@ function DashboardPage({ products, loading, error, deletingId, onReload, onDelet
       <section className="content-card">
         <div className="page-head">
           <div>
-            <h2>Tìm kiếm sản phẩm</h2>
+            <h2>Sản phẩm nổi bật trong hệ thống</h2>
             <p className="muted-text">
-              Tìm nhanh theo tên và danh mục ngay trên Dashboard.
+              Ô tìm kiếm đã được chuyển lên thanh menu phía trên để dùng xuyên suốt.
             </p>
           </div>
         </div>
 
         <div className="filter-grid">
-          <label className="field">
-            <span>Tìm kiếm</span>
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Nhập tên sản phẩm"
-            />
-          </label>
-
           <label className="field">
             <span>Danh mục</span>
             <select value={category} onChange={(event) => setCategory(event.target.value)}>
@@ -94,6 +84,11 @@ function DashboardPage({ products, loading, error, deletingId, onReload, onDelet
               ))}
             </select>
           </label>
+
+          <div className="active-search-box">
+            <span>Từ khóa đang tìm</span>
+            <strong>{searchTerm.trim() ? searchTerm : 'Chưa nhập từ khóa'}</strong>
+          </div>
         </div>
 
         {error ? (
@@ -106,6 +101,10 @@ function DashboardPage({ products, loading, error, deletingId, onReload, onDelet
         ) : loading ? (
           <div className="empty-box">
             <p>Đang tải dữ liệu sản phẩm...</p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="empty-box">
+            <p>Không tìm thấy sản phẩm phù hợp với bộ lọc hiện tại.</p>
           </div>
         ) : (
           <ProductTable

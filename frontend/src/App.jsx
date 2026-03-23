@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import FeedbackBanner from './components/FeedbackBanner'
 import {
@@ -20,7 +20,18 @@ function App() {
   const [pageError, setPageError] = useState('')
   const [notice, setNotice] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
   const noticeTimerRef = useRef(null)
+  const deferredSearchTerm = useDeferredValue(searchTerm)
+
+  const normalizedSearch = deferredSearchTerm.trim().toLowerCase()
+  const searchedProducts = products.filter((product) => {
+    if (!normalizedSearch) return true
+
+    return `${product.name} ${product.category}`
+      .toLowerCase()
+      .includes(normalizedSearch)
+  })
 
   function showNotice(type, title, message) {
     window.clearTimeout(noticeTimerRef.current)
@@ -108,9 +119,19 @@ function App() {
     <div className="app-page">
       <header className="site-header">
         <div className="container site-header__inner">
-          <div>
+          <div className="site-header__brand">
             <h1 className="site-title">Quản lý sản phẩm</h1>
           </div>
+
+          <label className="site-search">
+            <span className="site-search__label">Tìm kiếm</span>
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Tìm theo tên hoặc danh mục"
+            />
+          </label>
 
           <nav className="site-nav">
             <NavLink
@@ -151,6 +172,8 @@ function App() {
             element={
               <DashboardPage
                 products={products}
+                visibleProducts={searchedProducts}
+                searchTerm={searchTerm}
                 loading={loading}
                 error={pageError}
                 deletingId={deletingId}
@@ -164,6 +187,8 @@ function App() {
             element={
               <ProductListPage
                 products={products}
+                visibleProducts={searchedProducts}
+                searchTerm={searchTerm}
                 loading={loading}
                 error={pageError}
                 deletingId={deletingId}
