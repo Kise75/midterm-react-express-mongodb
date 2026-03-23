@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="840" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="220" y1="160" x2="740" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="0.55" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="720" rx="48" fill="url(#bg)"/>
+  <circle cx="785" cy="135" r="92" fill="#ffffff" fill-opacity="0.08"/>
+  <circle cx="190" cy="560" r="122" fill="#ffffff" fill-opacity="0.08"/>
+
+  <rect x="218" y="132" width="524" height="324" rx="22" fill="#111827"/>
+  <rect x="238" y="152" width="484" height="284" rx="14" fill="url(#screen)"/>
+  <path d="M188 484C188 473.507 196.507 465 207 465H753C763.493 465 772 473.507 772 484V497H188V484Z" fill="#dbe4f0"/>
+  <path d="M150 497H810L744 562H216L150 497Z" fill="#f8fafc"/>
+  <rect x="412" y="509" width="136" height="20" rx="10" fill="#cbd5e1"/>
+
+  <text x="120" y="112" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="34" font-weight="700">
+    Dell XPS 13
+  </text>
+</svg>

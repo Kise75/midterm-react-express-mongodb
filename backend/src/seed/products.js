@@ -7,7 +7,7 @@ const sampleProducts = [
     name: 'Laptop Dell XPS 13',
     category: 'Laptop',
     price: 2500,
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300',
+    image: '/product-images/dell-xps-13.svg',
     stock: 5,
   },
   {
@@ -15,7 +15,7 @@ const sampleProducts = [
     name: 'iPhone 14',
     category: 'Phone',
     price: 1200,
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300',
+    image: '/product-images/iphone-14.svg',
     stock: 10,
   },
   {
@@ -23,7 +23,7 @@ const sampleProducts = [
     name: 'Samsung Galaxy S23',
     category: 'Phone',
     price: 1100,
-    image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300',
+    image: '/product-images/galaxy-s23.svg',
     stock: 8,
   },
   {
@@ -31,7 +31,7 @@ const sampleProducts = [
     name: 'MacBook Pro',
     category: 'Laptop',
     price: 3000,
-    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300',
+    image: '/product-images/macbook-pro.svg',
     stock: 3,
   },
 ];
@@ -79,4 +79,3 @@ module.exports = {
   sampleProducts,
   seedProducts,
 };
-
