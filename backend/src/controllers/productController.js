@@ -115,7 +115,7 @@ const updateProduct = async (req, res) => {
   }
 
   const updatedProduct = await Product.findOneAndUpdate({ id: productId }, payload, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 
