@@ -4,13 +4,27 @@ import ProductCard from './components/ProductCard'
 import ProductDetail from './components/ProductDetail'
 import ProductForm from './components/ProductForm'
 import Toolbar from './components/Toolbar'
-import { API_BASE_URL, createProduct, getApiErrorMessage, listProducts, removeProduct, updateProduct } from './api/products'
+import {
+  API_BASE_URL,
+  createProduct,
+  getApiErrorMessage,
+  listProducts,
+  removeProduct,
+  updateProduct,
+} from './api/products'
 import './App.css'
-import { EMPTY_PRODUCT_FORM, formatCompactNumber, formatCurrency, productToFormValues, validateProductForm } from './utils/products'
+import {
+  EMPTY_PRODUCT_FORM,
+  formatCompactNumber,
+  formatCurrency,
+  productToFormValues,
+  validateProductForm,
+} from './utils/products'
 
 function App() {
   const [products, setProducts] = useState([])
   const [selectedProductId, setSelectedProductId] = useState(null)
+  const [detailOpen, setDetailOpen] = useState(false)
   const [mode, setMode] = useState('create')
   const [formValues, setFormValues] = useState(EMPTY_PRODUCT_FORM)
   const [loading, setLoading] = useState(true)
@@ -22,6 +36,7 @@ function App() {
   const [formError, setFormError] = useState('')
   const [notice, setNotice] = useState(null)
   const noticeTimerRef = useRef(null)
+  const formSectionRef = useRef(null)
   const deferredSearch = useDeferredValue(search)
 
   const selectedProduct =
@@ -49,11 +64,6 @@ function App() {
     (sum, product) => sum + product.price * product.stock,
     0,
   )
-  const activeProduct =
-    visibleProducts.find((product) => product.id === selectedProductId) ??
-    visibleProducts[0] ??
-    null
-  const activeProductId = activeProduct?.id ?? null
 
   function showNotice(type, title, message) {
     window.clearTimeout(noticeTimerRef.current)
@@ -61,6 +71,12 @@ function App() {
     noticeTimerRef.current = window.setTimeout(() => {
       setNotice(null)
     }, 3500)
+  }
+
+  function scrollToForm() {
+    window.requestAnimationFrame(() => {
+      formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
   async function loadProducts(showLoading = false) {
@@ -108,14 +124,30 @@ function App() {
   useEffect(() => {
     if (selectedProductId && !products.some((product) => product.id === selectedProductId)) {
       setSelectedProductId(products[0]?.id ?? null)
+      setDetailOpen(false)
     }
   }, [products, selectedProductId])
+
+  useEffect(() => {
+    if (!detailOpen) return undefined
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setDetailOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [detailOpen])
 
   function beginCreate() {
     setMode('create')
     setFormValues(EMPTY_PRODUCT_FORM)
     setFormError('')
-    showNotice('info', 'Sẵn sàng thêm mới', 'Điền thông tin để tạo sản phẩm mới.')
+    setDetailOpen(false)
+    showNotice('info', 'Tao san pham', 'Form tao san pham da san sang ben duoi.')
+    scrollToForm()
   }
 
   function beginEdit(product) {
@@ -123,6 +155,18 @@ function App() {
     setSelectedProductId(product.id)
     setFormValues(productToFormValues(product))
     setFormError('')
+    setDetailOpen(false)
+    showNotice('info', 'Chinh sua san pham', `Ban dang sua ${product.name}.`)
+    scrollToForm()
+  }
+
+  function openDetail(productId) {
+    setSelectedProductId(productId)
+    setDetailOpen(true)
+  }
+
+  function closeDetail() {
+    setDetailOpen(false)
   }
 
   function resetForm() {
@@ -139,6 +183,44 @@ function App() {
     }))
   }
 
+  async function handleImageFileChange(event) {
+    const input = event.target
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setFormError('File da chon khong phai la anh hop le.')
+      return
+    }
+
+    const imageDataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(String(reader.result ?? ''))
+      reader.onerror = () => reject(new Error('Khong doc duoc file anh da chon.'))
+      reader.readAsDataURL(file)
+    }).catch((error) => {
+      setFormError(error.message)
+      return ''
+    })
+
+    if (!imageDataUrl) return
+
+    setFormValues((current) => ({
+      ...current,
+      image: imageDataUrl,
+    }))
+    input.value = ''
+    setFormError('')
+    showNotice('success', 'Anh da duoc chon', 'Anh tu may tinh se duoc luu cung san pham.')
+  }
+
+  function handleClearImage() {
+    setFormValues((current) => ({
+      ...current,
+      image: '',
+    }))
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
     setFormError('')
@@ -146,7 +228,7 @@ function App() {
     const validationError = validateProductForm(formValues)
     if (validationError) {
       setFormError(validationError)
-      showNotice('error', 'Dữ liệu chưa hợp lệ', validationError)
+      showNotice('error', 'Du lieu chua hop le', validationError)
       return
     }
 
@@ -154,7 +236,7 @@ function App() {
       name: formValues.name.trim(),
       category: formValues.category.trim(),
       price: Number(formValues.price),
-      image: formValues.image.trim(),
+      image: String(formValues.image ?? '').trim(),
       stock: Number(formValues.stock),
     }
 
@@ -164,31 +246,33 @@ function App() {
       if (mode === 'edit' && selectedProduct) {
         const updated = await updateProduct(selectedProduct.id, payload)
         setProducts((current) =>
-          current.map((product) => (product.id === updated.id ? updated : product)).sort((left, right) => left.id - right.id),
+          current
+            .map((product) => (product.id === updated.id ? updated : product))
+            .sort((left, right) => left.id - right.id),
         )
         setSelectedProductId(updated.id)
-        showNotice('success', 'Cập nhật thành công', `${updated.name} đã được lưu vào MongoDB.`)
+        showNotice('success', 'Cap nhat thanh cong', `${updated.name} da duoc cap nhat.`)
       } else {
         const created = await createProduct(payload)
         setProducts((current) =>
           [created, ...current].sort((left, right) => left.id - right.id),
         )
         setSelectedProductId(created.id)
-        showNotice('success', 'Thêm thành công', `${created.name} đã được tạo mới.`)
+        showNotice('success', 'Them thanh cong', `${created.name} da duoc tao moi.`)
       }
 
       resetForm()
     } catch (error) {
       const message = getApiErrorMessage(error)
       setFormError(message)
-      showNotice('error', 'Không thể lưu sản phẩm', message)
+      showNotice('error', 'Khong the luu san pham', message)
     } finally {
       setSavingId(null)
     }
   }
 
   async function handleDelete(product) {
-    const confirmed = window.confirm(`Xóa sản phẩm "${product.name}"?`)
+    const confirmed = window.confirm(`Xoa san pham "${product.name}"?`)
     if (!confirmed) return
 
     setSavingId(product.id)
@@ -206,9 +290,10 @@ function App() {
         resetForm()
       }
 
-      showNotice('success', 'Đã xóa sản phẩm', `${product.name} đã được xóa khỏi hệ thống.`)
+      setDetailOpen(false)
+      showNotice('success', 'Da xoa san pham', `${product.name} da duoc xoa.`)
     } catch (error) {
-      showNotice('error', 'Xóa thất bại', getApiErrorMessage(error))
+      showNotice('error', 'Xoa that bai', getApiErrorMessage(error))
     } finally {
       setSavingId(null)
     }
@@ -218,15 +303,13 @@ function App() {
     <div className="app-shell">
       <header className="hero-shell">
         <div className="hero-shell__content">
-          <p className="eyebrow">React + Express + MongoDB</p>
-          <h1>Midterm product manager</h1>
+          <h1>Quan ly san pham</h1>
           <p className="hero-shell__lead">
-            Giao diện một trang để quản lý danh sách sản phẩm, xem chi tiết, thêm sửa xóa
-            và đồng bộ với backend MongoDB local.
+            Theo doi danh sach san pham, them sua xoa va dong bo truc tiep voi MongoDB local.
           </p>
           <div className="hero-shell__actions">
             <button type="button" className="button button--primary" onClick={beginCreate}>
-              Tạo sản phẩm
+              Tao san pham
             </button>
             <span className="api-pill">API: {API_BASE_URL}</span>
           </div>
@@ -234,15 +317,15 @@ function App() {
 
         <div className="hero-shell__stats">
           <div className="stat-card">
-            <span>Sản phẩm</span>
+            <span>San pham</span>
             <strong>{formatCompactNumber(products.length)}</strong>
           </div>
           <div className="stat-card">
-            <span>Tổng tồn kho</span>
+            <span>Tong ton kho</span>
             <strong>{formatCompactNumber(totalStock)}</strong>
           </div>
           <div className="stat-card">
-            <span>Giá trị kho</span>
+            <span>Gia tri kho</span>
             <strong>{formatCurrency(inventoryValue)}</strong>
           </div>
         </div>
@@ -255,14 +338,14 @@ function App() {
         category={category}
         categoryOptions={categoryOptions.map((option) => ({
           value: option === 'All categories' ? 'all' : option,
-          label: option,
+          label: option === 'All categories' ? 'Tat ca' : option,
         }))}
         onSearchChange={setSearch}
         onCategoryChange={setCategory}
         onResetFilters={() => {
           setSearch('')
           setCategory('all')
-          showNotice('info', 'Bộ lọc đã được xóa', 'Danh sách trở về trạng thái mặc định.')
+          showNotice('info', 'Da bo loc', 'Danh sach da tro ve trang thai mac dinh.')
         }}
         onCreateNew={beginCreate}
         totalCount={products.length}
@@ -273,15 +356,17 @@ function App() {
       {pageError ? (
         <section className="panel panel--error">
           <div>
-            <p className="eyebrow">Không thể tải dữ liệu</p>
             <h3>{pageError}</h3>
             <p>
-              Kiểm tra backend ở cổng `5000`, sau đó bấm thử lại để fetch danh sách sản phẩm
-              từ MongoDB.
+              Kiem tra backend o cong 5000, sau do bam thu lai de fetch danh sach tu MongoDB.
             </p>
           </div>
-          <button type="button" className="button button--primary" onClick={() => void loadProducts(true)}>
-            Thử lại
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={() => void loadProducts(true)}
+          >
+            Thu lai
           </button>
         </section>
       ) : null}
@@ -290,8 +375,10 @@ function App() {
         <section className="panel panel--list">
           <div className="panel__header">
             <div>
-              <p className="eyebrow">Danh sách sản phẩm</p>
-              <h3>{visibleCount} kết quả phù hợp</h3>
+              <h3>{visibleCount} ket qua phu hop</h3>
+              <p className="detail-subtitle">
+                Bam vao san pham de mo man hinh chi tiet, bam Sua de dua du lieu vao form.
+              </p>
             </div>
             {loading ? <span className="badge">Loading...</span> : null}
           </div>
@@ -313,9 +400,9 @@ function App() {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  isActive={product.id === activeProductId}
+                  isActive={product.id === selectedProductId}
                   isBusy={savingId === product.id}
-                  onSelect={setSelectedProductId}
+                  onOpenDetail={openDetail}
                   onEdit={beginEdit}
                   onDelete={handleDelete}
                 />
@@ -323,11 +410,9 @@ function App() {
             </div>
           ) : (
             <div className="empty-state">
-              <p className="eyebrow">Không có kết quả</p>
-              <h3>Không tìm thấy sản phẩm phù hợp</h3>
+              <h3>Khong tim thay san pham phu hop</h3>
               <p>
-                Thử đổi từ khóa tìm kiếm, chọn lại danh mục hoặc xóa bộ lọc để xem toàn bộ
-                danh sách.
+                Thu doi tu khoa tim kiem, chon lai danh muc hoac bo loc de xem toan bo.
               </p>
               <button
                 type="button"
@@ -337,32 +422,41 @@ function App() {
                   setCategory('all')
                 }}
               >
-                Xóa bộ lọc
+                Xoa bo loc
               </button>
             </div>
           )}
         </section>
 
-        <aside className="workspace__sidebar">
+        <aside className="workspace__sidebar" ref={formSectionRef}>
           <ProductForm
             mode={mode}
             values={formValues}
             onChange={handleFieldChange}
+            onFileSelect={handleImageFileChange}
+            onClearImage={handleClearImage}
             onSubmit={handleSubmit}
             onReset={resetForm}
             isSaving={savingId === 'new' || (selectedProduct && savingId === selectedProduct.id)}
             error={formError}
             categoryOptions={categoryOptions.filter((option) => option !== 'All categories')}
           />
-
-          <ProductDetail
-            product={activeProduct}
-            onEdit={beginEdit}
-            onDelete={handleDelete}
-            onCreateNew={beginCreate}
-          />
         </aside>
       </main>
+
+      {detailOpen ? (
+        <div className="detail-modal-backdrop" onClick={closeDetail}>
+          <div className="detail-modal-shell" onClick={(event) => event.stopPropagation()}>
+            <ProductDetail
+              product={selectedProduct}
+              onEdit={beginEdit}
+              onDelete={handleDelete}
+              onCreateNew={beginCreate}
+              onClose={closeDetail}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

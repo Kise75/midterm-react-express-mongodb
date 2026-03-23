@@ -1,7 +1,11 @@
+import { getProductImage } from '../utils/products'
+
 function ProductForm({
   mode,
   values,
   onChange,
+  onFileSelect,
+  onClearImage,
   onSubmit,
   onReset,
   isSaving,
@@ -9,38 +13,41 @@ function ProductForm({
   categoryOptions,
 }) {
   const isEditMode = mode === 'edit'
+  const usingLocalImage = String(values.image ?? '').startsWith('data:image/')
 
   return (
     <section className="panel panel--form">
       <div className="panel__header">
         <div>
-          <p className="eyebrow">{isEditMode ? 'Chỉnh sửa' : 'Thêm mới'}</p>
-          <h3>{isEditMode ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm mới'}</h3>
+          <h3>{isEditMode ? 'Cap nhat san pham' : 'Tao san pham moi'}</h3>
+          <p className="detail-subtitle">
+            Anh la tuy chon. Ban co the nhap URL, chon file tu may, hoac de trong.
+          </p>
         </div>
-        {isEditMode ? <span className="badge badge--accent">Edit mode</span> : null}
+        {isEditMode ? <span className="badge badge--accent">Edit</span> : null}
       </div>
 
       <form className="product-form" onSubmit={onSubmit}>
         <label className="field">
-          <span>Tên sản phẩm</span>
+          <span>Ten san pham</span>
           <input
             type="text"
             name="name"
             value={values.name}
             onChange={onChange}
-            placeholder="Ví dụ: iPhone 14"
+            placeholder="Vi du: iPhone 14"
           />
         </label>
 
         <label className="field">
-          <span>Danh mục</span>
+          <span>Danh muc</span>
           <input
             type="text"
             name="category"
             value={values.category}
             onChange={onChange}
             list="category-suggestions"
-            placeholder="Ví dụ: Phone"
+            placeholder="Vi du: Phone"
           />
           <datalist id="category-suggestions">
             {categoryOptions.map((option) => (
@@ -51,7 +58,7 @@ function ProductForm({
 
         <div className="field-row">
           <label className="field">
-            <span>Giá</span>
+            <span>Gia</span>
             <input
               type="number"
               name="price"
@@ -64,7 +71,7 @@ function ProductForm({
           </label>
 
           <label className="field">
-            <span>Tồn kho</span>
+            <span>Ton kho</span>
             <input
               type="number"
               name="stock"
@@ -78,28 +85,55 @@ function ProductForm({
         </div>
 
         <label className="field">
-          <span>Image URL</span>
+          <span>Image URL (tuy chon)</span>
           <input
-            type="url"
+            type="text"
             name="image"
-            value={values.image}
+            value={usingLocalImage ? '' : values.image}
             onChange={onChange}
-            placeholder="https://images.unsplash.com/..."
+            placeholder="Dan URL vao day neu co"
           />
         </label>
 
-        {values.image ? (
-          <img className="form-preview" src={values.image} alt={values.name || 'Preview'} />
+        {usingLocalImage ? (
+          <p className="detail-subtitle">Dang su dung anh duoc chon tu may tinh.</p>
+        ) : null}
+
+        <label className="field">
+          <span>Hoac chon anh tu may</span>
+          <input type="file" accept="image/*" onChange={onFileSelect} />
+        </label>
+
+        {(values.image || isEditMode) ? (
+          <div className="field field--preview">
+            <span>Xem truoc anh</span>
+            <img
+              className="form-preview"
+              src={getProductImage(values)}
+              alt={values.name || 'Preview'}
+            />
+            {values.image ? (
+              <div className="panel__actions">
+                <button
+                  type="button"
+                  className="button button--ghost"
+                  onClick={onClearImage}
+                >
+                  Xoa anh dang chon
+                </button>
+              </div>
+            ) : null}
+          </div>
         ) : null}
 
         {error ? <p className="form-error">{error}</p> : null}
 
         <div className="panel__actions">
           <button type="submit" className="button button--primary" disabled={isSaving}>
-            {isSaving ? 'Đang lưu...' : isEditMode ? 'Lưu thay đổi' : 'Thêm sản phẩm'}
+            {isSaving ? 'Dang luu...' : isEditMode ? 'Luu thay doi' : 'Them san pham'}
           </button>
           <button type="button" className="button button--ghost" onClick={onReset}>
-            {isEditMode ? 'Hủy chỉnh sửa' : 'Xóa form'}
+            {isEditMode ? 'Huy chinh sua' : 'Xoa form'}
           </button>
         </div>
       </form>
@@ -108,4 +142,3 @@ function ProductForm({
 }
 
 export default ProductForm
-

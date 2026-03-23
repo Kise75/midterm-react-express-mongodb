@@ -11,10 +11,6 @@ const buildProductPayload = (body = {}) => {
     errors.push('category is required');
   }
 
-  if (!isFilledString(body.image)) {
-    errors.push('image is required');
-  }
-
   if (body.price === undefined || body.price === null || body.price === '') {
     errors.push('price is required');
   }
@@ -45,7 +41,7 @@ const buildProductPayload = (body = {}) => {
     name: isFilledString(body.name) ? body.name.trim() : '',
     category: isFilledString(body.category) ? body.category.trim() : '',
     price,
-    image: isFilledString(body.image) ? body.image.trim() : '',
+    image: typeof body.image === 'string' ? body.image.trim() : '',
     stock,
   };
 
@@ -68,4 +64,3 @@ module.exports = {
   buildProductPayload,
   parseProductId,
 };
-

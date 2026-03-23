@@ -6,6 +6,18 @@ export const EMPTY_PRODUCT_FORM = {
   stock: '',
 }
 
+export const DEFAULT_PRODUCT_IMAGE = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+    <rect width="960" height="720" fill="#e7ecef"/>
+    <rect x="180" y="150" width="600" height="420" rx="32" fill="#f8fafc" stroke="#94a3b8" stroke-width="8"/>
+    <circle cx="330" cy="290" r="52" fill="#cbd5e1"/>
+    <path d="M250 500l150-150 110 110 80-80 120 120H250z" fill="#94a3b8"/>
+    <text x="480" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" fill="#475569">
+      No image
+    </text>
+  </svg>`,
+)}`
+
 export function normalizeProduct(product = {}) {
   return {
     id: Number(product.id ?? product._id ?? 0),
@@ -22,7 +34,7 @@ export function productToFormValues(product = {}) {
     name: product.name ?? '',
     category: product.category ?? '',
     price: product.price ?? '',
-    image: product.image ?? '',
+    image: String(product.image ?? ''),
     stock: product.stock ?? '',
   }
 }
@@ -30,17 +42,20 @@ export function productToFormValues(product = {}) {
 export function validateProductForm(values) {
   const name = String(values.name ?? '').trim()
   const category = String(values.category ?? '').trim()
-  const image = String(values.image ?? '').trim()
   const price = Number(values.price)
   const stock = Number(values.stock)
 
-  if (!name) return 'Tên sản phẩm không được để trống.'
-  if (!category) return 'Danh mục không được để trống.'
-  if (!image) return 'Ảnh sản phẩm không được để trống.'
-  if (!Number.isFinite(price) || price <= 0) return 'Giá phải lớn hơn 0.'
-  if (!Number.isFinite(stock) || stock < 0) return 'Tồn kho phải từ 0 trở lên.'
+  if (!name) return 'Ten san pham khong duoc de trong.'
+  if (!category) return 'Danh muc khong duoc de trong.'
+  if (!Number.isFinite(price) || price <= 0) return 'Gia phai lon hon 0.'
+  if (!Number.isFinite(stock) || stock < 0) return 'Ton kho phai tu 0 tro len.'
 
   return null
+}
+
+export function getProductImage(product = {}) {
+  const image = String(product.image ?? '').trim()
+  return image || DEFAULT_PRODUCT_IMAGE
 }
 
 export function formatCurrency(value) {
@@ -57,4 +72,3 @@ export function formatCompactNumber(value) {
     maximumFractionDigits: 1,
   }).format(Number(value) || 0)
 }
-

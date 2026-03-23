@@ -1,18 +1,16 @@
-import { formatCurrency } from '../utils/products'
+import { formatCurrency, getProductImage } from '../utils/products'
 
-function ProductDetail({ product, onEdit, onDelete, onCreateNew }) {
+function ProductDetail({ product, onEdit, onDelete, onCreateNew, onClose }) {
   if (!product) {
     return (
       <section className="panel panel--detail">
         <div className="empty-state empty-state--detail">
-          <p className="eyebrow">Chi tiết sản phẩm</p>
-          <h3>Chọn một sản phẩm để xem thông tin</h3>
+          <h3>Chua co san pham nao duoc chon</h3>
           <p>
-            Thông tin chi tiết, ảnh, giá và tồn kho sẽ xuất hiện ở đây sau khi bạn click
-            vào một card bên trái.
+            Bam vao mot san pham trong danh sach de mo man hinh chi tiet ro rang hon.
           </p>
           <button type="button" className="button button--primary" onClick={onCreateNew}>
-            Tạo sản phẩm mới
+            Tao san pham moi
           </button>
         </div>
       </section>
@@ -23,39 +21,41 @@ function ProductDetail({ product, onEdit, onDelete, onCreateNew }) {
     <section className="panel panel--detail">
       <div className="panel__header">
         <div>
-          <p className="eyebrow">Chi tiết sản phẩm</p>
           <h3>{product.name}</h3>
+          <p className="detail-subtitle">Chi tiet san pham #{product.id}</p>
         </div>
-        <span className="badge badge--accent">#{product.id}</span>
+        <button type="button" className="button button--ghost" onClick={onClose}>
+          Dong
+        </button>
       </div>
 
-      <img className="detail-hero" src={product.image} alt={product.name} />
+      <img className="detail-hero" src={getProductImage(product)} alt={product.name} />
 
       <div className="detail-grid">
         <div className="detail-item">
-          <span>Danh mục</span>
+          <span>Danh muc</span>
           <strong>{product.category}</strong>
         </div>
         <div className="detail-item">
-          <span>Giá</span>
+          <span>Gia</span>
           <strong>{formatCurrency(product.price)}</strong>
         </div>
         <div className="detail-item">
-          <span>Tồn kho</span>
+          <span>Ton kho</span>
           <strong>{product.stock}</strong>
         </div>
         <div className="detail-item">
-          <span>Giá trị kho</span>
+          <span>Gia tri kho</span>
           <strong>{formatCurrency(product.price * product.stock)}</strong>
         </div>
       </div>
 
       <div className="panel__actions">
         <button type="button" className="button button--primary" onClick={() => onEdit(product)}>
-          Chỉnh sửa
+          Chinh sua
         </button>
         <button type="button" className="button button--danger" onClick={() => onDelete(product)}>
-          Xóa sản phẩm
+          Xoa san pham
         </button>
       </div>
     </section>
@@ -63,4 +63,3 @@ function ProductDetail({ product, onEdit, onDelete, onCreateNew }) {
 }
 
 export default ProductDetail
-
