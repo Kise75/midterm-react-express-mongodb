@@ -44,9 +44,6 @@ function ProductTable({ products, deletingId, onDelete }) {
               <td>{product.stock}</td>
               <td>
                 <div className="action-group">
-                  <Link className="button button--small button--secondary" to={`/products/${product.id}`}>
-                    Chi tiết
-                  </Link>
                   <Link className="button button--small" to={`/products/${product.id}/edit`}>
                     Sửa
                   </Link>
