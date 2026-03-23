@@ -26,18 +26,41 @@ function ProductTable({ products, deletingId, onDelete }) {
           {products.map((product) => (
             <tr key={product.id}>
               <td className="product-table__product">
-                <Link className="product-link" to={`/products/${product.id}`}>
-                  <img
-                    className="product-thumbnail"
-                    src={getProductImage(product)}
-                    alt={product.name}
-                  />
-                  <div className="product-link__content">
-                    <strong>{product.name}</strong>
-                    <span>Mã sản phẩm: {product.id}</span>
-                    <span className="product-link__hint">Bấm để xem chi tiết</span>
+                <div className="product-preview">
+                  <Link className="product-link" to={`/products/${product.id}`}>
+                    <img
+                      className="product-thumbnail"
+                      src={getProductImage(product)}
+                      alt={product.name}
+                    />
+                    <div className="product-link__content">
+                      <strong>{product.name}</strong>
+                      <span>Mã sản phẩm: {product.id}</span>
+                      <span className="product-link__hint">
+                        Di chuột để xem nhanh, bấm để mở chi tiết
+                      </span>
+                    </div>
+                  </Link>
+
+                  <div className="product-quick-view">
+                    <div className="product-quick-view__media">
+                      <img src={getProductImage(product)} alt={`Xem nhanh ${product.name}`} />
+                    </div>
+
+                    <div className="product-quick-view__content">
+                      <span className="product-quick-view__badge">Xem nhanh</span>
+                      <strong>{product.name}</strong>
+                      <p>Danh mục: {product.category}</p>
+                      <div className="product-quick-view__meta">
+                        <span>{formatCurrency(product.price)}</span>
+                        <span>Tồn kho: {product.stock}</span>
+                      </div>
+                      <span className="product-quick-view__note">
+                        Bấm vào sản phẩm để mở trang chi tiết.
+                      </span>
+                    </div>
                   </div>
-                </Link>
+                </div>
               </td>
               <td className="product-table__meta">{product.category}</td>
               <td className="product-table__meta">{formatCurrency(product.price)}</td>

@@ -252,6 +252,11 @@
   text-decoration: none;
 }
 
+.product-preview {
+  display: grid;
+  gap: 12px;
+}
+
 .product-link__content {
   display: grid;
   gap: 6px;
@@ -269,6 +274,83 @@
 
 .product-link__hint {
   color: #2563eb !important;
+}
+
+.product-quick-view {
+  display: none;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.product-preview:focus-within .product-quick-view {
+  display: grid;
+}
+
+.product-quick-view__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 104px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.product-quick-view__media img {
+  width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+}
+
+.product-quick-view__content {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.product-quick-view__content strong {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.product-quick-view__content p,
+.product-quick-view__note {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.product-quick-view__badge {
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.product-quick-view__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.product-quick-view__meta span {
+  padding: 6px 10px;
+  border: 1px solid #dbe2ea;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.product-quick-view__note {
+  color: #2563eb;
 }
 
 .product-thumbnail {
@@ -431,6 +513,12 @@
   background: #eff6ff;
 }
 
+@media (hover: hover) {
+  .product-preview:hover .product-quick-view {
+    display: grid;
+  }
+}
+
 @media (max-width: 900px) {
   .page-head,
   .detail-card__top,
@@ -466,6 +554,10 @@
   .product-link {
     align-items: flex-start;
   }
+
+  .product-quick-view {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -480,6 +572,10 @@
 
   .product-link__content strong {
     font-size: 1.05rem;
+  }
+
+  .product-quick-view {
+    display: none !important;
   }
 
   .site-nav {
