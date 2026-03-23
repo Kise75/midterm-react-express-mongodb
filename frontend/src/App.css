@@ -36,14 +36,7 @@
 }
 
 .site-search {
-  display: grid;
-  gap: 6px;
-}
-
-.site-search__label {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: #4b5563;
+  display: block;
 }
 
 .site-search input {

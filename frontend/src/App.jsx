@@ -123,8 +123,7 @@ function App() {
             <h1 className="site-title">Quản lý sản phẩm</h1>
           </div>
 
-          <label className="site-search">
-            <span className="site-search__label">Tìm kiếm</span>
+          <label className="site-search" aria-label="Tìm kiếm sản phẩm">
             <input
               type="search"
               value={searchTerm}
