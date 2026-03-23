@@ -10,6 +10,8 @@
 ## Tính năng chính
 
 - Hiển thị danh sách sản phẩm
+- Có thanh navbar để chuyển trang
+- Có trang Dashboard riêng để tìm kiếm nhanh
 - Xem chi tiết sản phẩm ở trang riêng
 - Thêm sản phẩm mới
 - Cập nhật sản phẩm
@@ -91,6 +93,14 @@ npm run dev
 
 - Backend: `http://localhost:5000`
 - Frontend: `http://localhost:5173`
+
+## Các trang chính
+
+- `/`: Dashboard
+- `/products`: Danh sách sản phẩm
+- `/products/new`: Thêm sản phẩm
+- `/products/:id`: Chi tiết sản phẩm
+- `/products/:id/edit`: Chỉnh sửa sản phẩm
 
 ## MongoDB Compass
 

@@ -139,7 +139,7 @@ function ProductFormPage({ products, loading, onCreate, onUpdate }) {
       onClearImage={handleClearImage}
       onSubmit={handleSubmit}
       onReset={handleReset}
-      onCancel={() => navigate(isEditMode ? `/products/${productId}` : '/')}
+      onCancel={() => navigate(isEditMode ? `/products/${productId}` : '/products')}
     />
   )
 }

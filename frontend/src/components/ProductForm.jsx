@@ -87,7 +87,7 @@ function ProductForm({
         </label>
 
         <label className="field form-grid__full">
-          <span>URL ảnh (không bắt buộc)</span>
+          <span>URL ảnh, không bắt buộc</span>
           <input
             type="text"
             name="image"

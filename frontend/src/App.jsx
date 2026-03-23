@@ -8,10 +8,11 @@ import {
   removeProduct,
   updateProduct,
 } from './api/products'
+import './App.css'
+import DashboardPage from './pages/DashboardPage'
 import ProductDetailPage from './pages/ProductDetailPage'
 import ProductFormPage from './pages/ProductFormPage'
 import ProductListPage from './pages/ProductListPage'
-import './App.css'
 
 function App() {
   const [products, setProducts] = useState([])
@@ -114,12 +115,21 @@ function App() {
 
           <nav className="site-nav">
             <NavLink
+              end
               to="/"
               className={({ isActive }) =>
                 `site-nav__link ${isActive ? 'site-nav__link--active' : ''}`
               }
             >
-              Danh sách
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/products"
+              className={({ isActive }) =>
+                `site-nav__link ${isActive ? 'site-nav__link--active' : ''}`
+              }
+            >
+              Danh sách sản phẩm
             </NavLink>
             <NavLink
               to="/products/new"
@@ -139,6 +149,19 @@ function App() {
         <Routes>
           <Route
             path="/"
+            element={
+              <DashboardPage
+                products={products}
+                loading={loading}
+                error={pageError}
+                deletingId={deletingId}
+                onReload={() => loadProducts()}
+                onDelete={handleDelete}
+              />
+            }
+          />
+          <Route
+            path="/products"
             element={
               <ProductListPage
                 products={products}

@@ -10,7 +10,7 @@ function ProductDetailPage({ products, loading, deletingId, onDelete }) {
   async function handleDelete(productToDelete) {
     const deleted = await onDelete(productToDelete)
     if (deleted) {
-      navigate('/')
+      navigate('/products')
     }
   }
 

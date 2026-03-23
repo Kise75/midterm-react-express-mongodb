@@ -1,29 +1,8 @@
 import { Link } from 'react-router-dom'
-import { useDeferredValue, useState } from 'react'
 import ProductTable from '../components/ProductTable'
 import { formatCompactNumber, formatCurrency } from '../utils/products'
 
 function ProductListPage({ products, loading, error, deletingId, onReload, onDelete }) {
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('all')
-  const deferredSearch = useDeferredValue(search)
-
-  const categoryOptions = [
-    'all',
-    ...new Set(products.map((product) => product.category).filter(Boolean)),
-  ]
-
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory = category === 'all' || product.category === category
-    const matchesSearch =
-      !deferredSearch.trim() ||
-      `${product.name} ${product.category}`
-        .toLowerCase()
-        .includes(deferredSearch.trim().toLowerCase())
-
-    return matchesCategory && matchesSearch
-  })
-
   const totalStock = products.reduce((sum, product) => sum + product.stock, 0)
   const totalValue = products.reduce((sum, product) => sum + product.price * product.stock, 0)
 
@@ -34,7 +13,7 @@ function ProductListPage({ products, loading, error, deletingId, onReload, onDel
           <div>
             <h2>Danh sách sản phẩm</h2>
             <p className="muted-text">
-              Quản lý sản phẩm bằng các trang riêng: danh sách, chi tiết và thêm / sửa.
+              Trang này hiển thị toàn bộ sản phẩm hiện có trong hệ thống.
             </p>
           </div>
           <Link className="button" to="/products/new">
@@ -59,29 +38,6 @@ function ProductListPage({ products, loading, error, deletingId, onReload, onDel
       </section>
 
       <section className="content-card">
-        <div className="filter-grid">
-          <label className="field">
-            <span>Tìm kiếm</span>
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Nhập tên sản phẩm"
-            />
-          </label>
-
-          <label className="field">
-            <span>Danh mục</span>
-            <select value={category} onChange={(event) => setCategory(event.target.value)}>
-              {categoryOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option === 'all' ? 'Tất cả' : option}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
         {error ? (
           <div className="empty-box">
             <p>{error}</p>
@@ -95,7 +51,7 @@ function ProductListPage({ products, loading, error, deletingId, onReload, onDel
           </div>
         ) : (
           <ProductTable
-            products={filteredProducts}
+            products={products}
             deletingId={deletingId}
             onDelete={onDelete}
           />

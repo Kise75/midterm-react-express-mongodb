@@ -18,7 +18,7 @@ function ProductDetail({ product, isDeleting, onDelete }) {
           <p className="muted-text">Mã sản phẩm: {product.id}</p>
         </div>
         <div className="action-group">
-          <Link className="button button--secondary" to="/">
+          <Link className="button button--secondary" to="/products">
             Quay lại
           </Link>
           <Link className="button" to={`/products/${product.id}/edit`}>
